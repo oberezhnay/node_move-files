@@ -32,7 +32,7 @@ function moveFile() {
 
   if (isDestinationDirectory) {
     if (!fs.existsSync(destination)) {
-      throw new Error('Destination directory does not exist!');
+      throw new Error('Destination directory does not exist');
     }
 
     const destStat = fs.statSync(destination);
@@ -62,12 +62,21 @@ function moveFile() {
     }
   }
 
-  const parentDir = path.dirname(destination);
+  if (isDestinationDirectory) {
+    if (
+      !fs.existsSync(destination) ||
+      !fs.statSync(destination).isDirectory()
+    ) {
+      throw new Error('Destination directory does not exist');
+    }
+  } else {
+    const parentDir = path.resolve(path.dirname(destination));
 
-  if (!fs.existsSync(parentDir)) {
-    console.error('Destination directory does not exist');
+    if (!fs.existsSync(parentDir) || !fs.statSync(parentDir).isDirectory()) {
+      console.error('Destination directory does not exist');
 
-    return;
+      return;
+    }
   }
 
   fs.renameSync(source, destination);
