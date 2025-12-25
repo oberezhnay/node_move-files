@@ -65,9 +65,7 @@ function moveFile() {
   const parentDir = path.dirname(destination);
 
   if (!fs.existsSync(parentDir)) {
-    console.error('Destination directory does not exist');
-
-    return;
+    throw new Error('Destination directory does not exist');
   }
 
   fs.renameSync(source, destination);
